@@ -1,25 +1,74 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-<meta http-equiv="Content-Type" content="text/html;">
-<meta name="format-detection" content="telephone=no">
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html;">
+  <meta name="format-detection" content="telephone=no">
   <meta charset="UTF-8">
   <title>简单留言板</title>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-    input, textarea, button { width: 100%; margin: 8px 0; padding: 10px; box-sizing: border-box; }
-    button { cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      max-width: 600px;
+      margin: 0 auto;
+      /* 适配 iPhone 刘海 / 底部安全区，不顶到屏幕边 */
+      padding: max(16px, env(safe-area-inset-top))
+               max(16px, env(safe-area-inset-right))
+               max(16px, env(safe-area-inset-bottom))
+               max(16px, env(safe-area-inset-left));
+      color: #222;
+    }
+    h2 { font-size: 22px; margin: 8px 0 16px; }
+    h3 { font-size: 18px; margin: 18px 0 8px; }
+
+    input, textarea {
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px 14px;
+      box-sizing: border-box;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+    }
+    textarea { resize: vertical; }
+
+    /* 通用按钮：收一下纵向高度，不再又长又扁 */
+    button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 13px 14px;
+      box-sizing: border-box;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
     button:hover { background: #0056b3; }
+    button:active { background: #00468f; } /* 点按反馈，iPhone 上更跟手 */
+
     .hidden { display: none; }
-    .msg { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .msg {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      word-break: break-word;
+    }
     .msg strong { color: #333; }
-    #login-msg { margin-top: 10px; font-size: 14px; }
+    #login-msg, #reg-msg { margin-top: 6px; font-size: 14px; min-height: 18px; }
     #welcome-text { color: #007bff; font-weight: bold; margin: 10px 0; }
+    a { color: #007bff; }
   </style>
 </head>
 <body>
@@ -128,7 +177,6 @@
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('board-section').classList.remove('hidden');
 
-        // 读取 Cookie 中的用户名
         const cookies = document.cookie.split(';');
         let username = '';
         for (let c of cookies) {
